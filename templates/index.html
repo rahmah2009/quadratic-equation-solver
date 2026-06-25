@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Equation Solver</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Quadratic Equation Solver</h1>
+
+        <form action="/solve" method="POST">
+
+            <label for="a">a:</label>
+            <input type="number" step="any" name="a" id="a" placeholder="Enter value for a" required>
+            <br> <br>
+
+            <label for="b">b:</label>
+            <input type="number" step="any" name="b" id="b" placeholder="Enter value for b" required>
+            <br> <br>
+            <label for="c">c:</label>
+            <input type="number" step="any" name="c" id="c" placeholder="Enter value for c" required>
+            <br> <br>
+
+            <div>
+                <button type="submit">Solve</button>
+                <button type="rest" onclick="window.location='/'">Delete</button>
+
+            </div>
+        </form>
+
+        <div class="result">
+            <!-- Result from Go appears here -->
+            {{if .Result}}
+            <h2>RESULT</h2>
+            <h3>{{.Result}}</h3>
+            {{end}}
+        </div>
+        <div class="error">
+            {{.Error}}
+        </div>
+</body>
+
+</html>
