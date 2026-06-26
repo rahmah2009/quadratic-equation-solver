@@ -115,4 +115,5 @@ func complexxQuadraticEquation(a, b, c float64) (complex128, complex128, error) 
 	return firstRoot, secondRoot, nil
 }
 
-// https://chatgpt.com/s/t_6a3d7f9e50c88191ab59cbbc8b1a0a26
+// https://chatgpt.com/
+// s/t_6a3d7f9e50c88191ab59cbbc8b1a0a26
