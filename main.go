@@ -25,51 +25,70 @@ type data struct {
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", home)
+	http.HandleFunc("/solve", quadraticHandler)
 	fmt.Println("server running on http://localhost:8001")
 	http.ListenAndServe(":8001", nil)
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
+	tmpl.Execute(w, nil)
+}
+
+func quadraticHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Error parsing form", http.StatusBadRequest)
 		return
 	}
 
-	if r.Method == http.MethodGet {
-		tmpl.Execute(w, nil)
+	if r.FormValue("a") == "" || r.FormValue("b") == "" || r.FormValue("c") == "" {
+		http.Error(w, "Missing input values", http.StatusBadRequest)
 		return
 	}
 
-	if r.Method == http.MethodPost {
-		a := r.FormValue("a")
-		b := r.FormValue("b")
-		c := r.FormValue("c")
+	a := r.FormValue("a")
+	b := r.FormValue("b")
+	c := r.FormValue("c")
 
-		// data := data{
-		// 	Result: result,
-		// }
-		// tmpl.Execute(w, data)
+	// data := data{
+	// 	Result: result,
+	// }
+	// tmpl.Execute(w, data)
 
-		var aFloat, bFloat, cFloat float64
-		fmt.Sscanf(a, "%f", &aFloat)
-		fmt.Sscanf(b, "%f", &bFloat)
-		fmt.Sscanf(c, "%f", &cFloat)
+	var aFloat, bFloat, cFloat float64
 
-		firstRoot, secondRoot, err := complexxQuadraticEquation(aFloat, bFloat, cFloat)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+	fmt.Sscanf(a, "%f", &aFloat)
+	fmt.Sscanf(b, "%f", &bFloat)
+	fmt.Sscanf(c, "%f", &cFloat)
 
-		result := fmt.Sprintf("Roots: %v, %v", firstRoot, secondRoot)
-		data := data{
-			Result: result,
-		}
-		tmpl.Execute(w, data)
-	} else {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	firstRoot, secondRoot, err := complexxQuadraticEquation(aFloat, bFloat, cFloat)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
+
+	result := fmt.Sprintf("Roots: %v, %v", firstRoot, secondRoot)
+	data := data{
+		Result: result,
+	}
+
+	tmpl.Execute(w, data)
+
 }
 
 func complexxQuadraticEquation(a, b, c float64) (complex128, complex128, error) {
@@ -95,3 +114,5 @@ func complexxQuadraticEquation(a, b, c float64) (complex128, complex128, error) 
 	secondRoot := (-B - squarerootDiscriminant) / (2 * A)
 	return firstRoot, secondRoot, nil
 }
+
+// https://chatgpt.com/s/t_6a3d7f9e50c88191ab59cbbc8b1a0a26
