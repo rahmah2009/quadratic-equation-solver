@@ -76,7 +76,7 @@ func quadraticHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Sscanf(b, "%f", &bFloat)
 	fmt.Sscanf(c, "%f", &cFloat)
 
-	firstRoot, secondRoot, err := complexxQuadraticEquation(aFloat, bFloat, cFloat)
+	firstRoot, secondRoot, err := complexQuadraticEquation(aFloat, bFloat, cFloat)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -91,7 +91,7 @@ func quadraticHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func complexxQuadraticEquation(a, b, c float64) (complex128, complex128, error) {
+func complexQuadraticEquation(a, b, c float64) (complex128, complex128, error) {
 	if a == 0 {
 		return 0, 0, fmt.Errorf("coefficient \"a\" cannot be zero")
 	}
